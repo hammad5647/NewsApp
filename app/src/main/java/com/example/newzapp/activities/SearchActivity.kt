@@ -17,7 +17,7 @@ import retrofit2.Response
 class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
     var searchAdapter: NewsAdapter? = null
-    var search: String = ""
+    var searchNews = "Breaking News"
     var list = mutableListOf<ResponseNewsItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,36 +28,18 @@ class SearchActivity : AppCompatActivity() {
 
         clickInit()
 
-//        val newsApiInterface = getNews().create(NewsApiInterface::class.java)
-//        newsApiInterface.getSearchData(q = search)
-//            .enqueue(object : Callback<List<ResponseNewsItem>> {
-//                override fun onResponse(
-//                    call: Call<List<ResponseNewsItem>>,
-//                    response: Response<List<ResponseNewsItem>>
-//                ) {
-//                    if (response.isSuccessful) {
-//                        list = response.body()!! as MutableList
-//                        searchAdapter = NewsAdapter(list)
-//                        binding.searchRecyclerView.adapter = searchAdapter
-//                    }
-//                }
-//
-//                override fun onFailure(call: Call<List<ResponseNewsItem>>, t: Throwable) {
-//                    Log.e("error", "onFailure: ${t.message}")
-//                }
-//            })
     }
-
     private fun clickInit() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
+
+                apiCall(query!!)
+                Log.e("Search Data", "onQueryTextSubmit: $searchNews", )
                 return false
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
-                    search = searchAdapter?.searchFilter(newText).toString()
-
+                    searchNews = searchAdapter?.searchFilter(newText).toString()
                 }
                 return true
             }
@@ -67,4 +49,29 @@ class SearchActivity : AppCompatActivity() {
             finish()
         }
     }
+
+    fun apiCall(searchNews: String)
+    {
+        val newsApiInterface = getNews().create(NewsApiInterface::class.java)
+        newsApiInterface.getSearchData(q =searchNews)
+            .enqueue(object : Callback<List<ResponseNewsItem>> {
+                override fun onResponse(
+                    call: Call<List<ResponseNewsItem>>,
+                    response: Response<List<ResponseNewsItem>>
+                ) {
+                    if (response.isSuccessful) {
+                        list = response.body()!! as MutableList
+                        searchAdapter = NewsAdapter(list)
+                        binding.searchRecyclerView.adapter = searchAdapter
+                        Log.e("Search Data", "onQueryTextSubmit: $list", )
+
+                    }
+                }
+
+                override fun onFailure(call: Call<List<ResponseNewsItem>>, t: Throwable) {
+                    Log.e("error", "onFailure: ${t.message}")
+                }
+            })
+    }
+
 }

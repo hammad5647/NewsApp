@@ -33,6 +33,7 @@ class BookmarkActivity : AppCompatActivity() {
         }
     }
     override fun onResume() {
+
         list = initDatabase(this).dao().readData()
         adapter.bookmarkData(list)
         binding.bookmarkImage.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE

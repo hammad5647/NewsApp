@@ -5,13 +5,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.newzapp.adapters.NewsAdapter
 import com.example.newzapp.databinding.ActivityChannelBinding
-import com.example.newzapp.domains.NewsApiClient.Companion.getNews
-import com.example.newzapp.domains.NewsApiInterface
-import com.example.newzapp.models.ResponseNews
 import com.example.newzapp.models.ResponseNewsItem
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class ChannelActivity : AppCompatActivity() {
 
@@ -44,6 +38,9 @@ class ChannelActivity : AppCompatActivity() {
     }
 
     private fun clickInit() {
+        binding.backBtn.setOnClickListener{
+            finish()
+        }
         binding.cnnNews.setOnClickListener {
             source = "cnn"
         }

@@ -33,6 +33,7 @@ class CountryActivity : AppCompatActivity() {
                 Toast.makeText(this, "$countryName", Toast.LENGTH_SHORT).show()
                 sharedHelper.setCountry(countryName!!, this)
                 val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("country", countryName)
                 startActivity(intent)
             }
         }

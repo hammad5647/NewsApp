@@ -19,7 +19,6 @@ import com.example.newzapp.databinding.CountrySelectLayoutBinding
 import com.example.newzapp.domains.NewsApiClient.Companion.getNews
 import com.example.newzapp.domains.NewsApiInterface
 import com.example.newzapp.domains.SharedHelper
-import com.example.newzapp.models.ResponseNews
 import com.example.newzapp.models.ResponseNewsItem
 import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 import retrofit2.Call
@@ -60,9 +59,10 @@ class MainActivity : AppCompatActivity() {
             applyTheme(isChecked)
             binding.main.closeDrawers()
         }
+        getNewsData()
 
         val newsApiInterface = getNews().create(NewsApiInterface::class.java)
-        newsApiInterface.getEveryData().enqueue(object : Callback<List<ResponseNewsItem>> {
+        newsApiInterface.getEveryData(country = country).enqueue(object : Callback<List<ResponseNewsItem>> {
             override fun onResponse(
                 call: Call<List<ResponseNewsItem>>,
                 response: Response<List<ResponseNewsItem>>
@@ -77,11 +77,15 @@ class MainActivity : AppCompatActivity() {
                     Log.e("Success Error", "onResponse: ${response.message()}")
                 }
             }
-
             override fun onFailure(call: Call<List<ResponseNewsItem>>, t: Throwable) {
                 Log.e("Error", "onFailure: ${t.message} ")
             }
         })
+    }
+
+    private fun getNewsData() {
+        var intent: Intent = getIntent()
+        country = intent.getStringExtra("country").toString()
     }
 
     @SuppressLint("ResourceType")
@@ -117,6 +121,7 @@ class MainActivity : AppCompatActivity() {
             dialogBinding.checkUAE.isChecked = false
             dialogBinding.checkAustralia.isChecked = false
             dialogBinding.checkSriLanka.isChecked = false
+
         }
 
         dialogBinding.checkUS.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -147,7 +152,6 @@ class MainActivity : AppCompatActivity() {
             dialogBinding.checkSriLanka.isChecked = false
         }
         dialogBinding.checkAustralia.setOnCheckedChangeListener { buttonView, isChecked ->
-
             country = "aus"
             dialogBinding.checkUS.isChecked = false
             dialogBinding.checkUAE.isChecked = false
@@ -164,7 +168,8 @@ class MainActivity : AppCompatActivity() {
             dialogBinding.checkIndia.isChecked = false
         }
 
-
+        sharedHelper.setCountry(country = country,this)
+        Log.e("Country", "showMenu: $country", )
         val cancelBtn: TextView = dialog.findViewById(R.id.cancelBtn)
         val okBtn: TextView = dialog.findViewById(R.id.okBtn)
 
